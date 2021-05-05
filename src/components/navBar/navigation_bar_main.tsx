@@ -1,31 +1,34 @@
 import React from 'react';
 import {Texts} from "../../configs/texts";
+import {useSetUser, useUser} from "../../contexts/user_context";
+import {BrowserRouter, Link} from "react-router-dom";
+import {Routes} from "../../configs/routes";
+import {Dropdown, Nav, Navbar, NavDropdown} from "react-bootstrap";
 
-function NavigationBar() {
+function NavigationBarMain() {
+    const user=useUser();
+    const setUser=useSetUser();
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark w-100">
-            <div className="navbar-brand mx-3">{Texts.appName}</div>
-            <button
-                className="navbar-toggler"
-                type="button"
-                data-mdb-toggle="collapse"
-                data-mdb-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-            >
-                <i className="fas fa-bars"/>
-            </button>
-            <div className="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                <ul className="navbar-nav">
-                    <li className="nav-item">
-                        <a href="#" className="nav-link active"> Sign In</a>
-                    </li>
-                </ul>
-            </div>
-
-        </nav>
+        <Navbar bg="dark" variant="dark" expand="lg">
+            <Navbar.Brand as={Link} to={Routes.home}>{Texts.appName}</Navbar.Brand>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="w-100 justify-content-end">
+                    <Nav.Link  as={Link} to={Routes.home}>Home</Nav.Link>
+                    {user&&<NavDropdown alignRight title={user?.firstName} id="basic-nav-dropdown">
+                        <NavDropdown.Item as={Link} to={Routes.userProfile}>
+                            Profile
+                        </NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to={Routes.signOut}>
+                            Sign Out
+                        </NavDropdown.Item>
+                    </NavDropdown>}
+                    {!user&&<Nav.Link as={Link} to={Routes.signUp}>Sign Up</Nav.Link>}
+                    {!user&&<Nav.Link as={Link} to={Routes.signIn}>Sign In</Nav.Link>}
+                </Nav>
+            </Navbar.Collapse>
+        </Navbar>
     );
 }
 
-export default NavigationBar;
+export default NavigationBarMain;

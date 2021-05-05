@@ -1,44 +1,53 @@
 import React from 'react';
 import GymInterface from "../../interfaces/gym_interface";
+import {useHistory} from 'react-router-dom';
+import {Routes} from "../../configs/routes";
+import {Carousel} from "react-bootstrap";
+import {ADD_ENROLLED_GYM} from "../../graphqlQueries/gymQueries";
+import {useClient, useUser} from "../../contexts/user_context";
 
 const maxLength = 180;
 
 function GymCard({gym}: { gym: GymInterface }) {
+    const user=useUser();
+    const client=useClient();
+    const history = useHistory();
     let description = gym.description;
     if (gym.description.length > maxLength) {
         description = gym.description.substr(0, maxLength) + "...";
+    }
+    function onBook(){
+        client.mutate({
+            mutation:ADD_ENROLLED_GYM,
+            variables:{
+                username:user?.email,
+                gymID:gym.id,
+                moneyPaid:gym?.plans[0].price,
+                type:"daily",
+                expired:false
+            }
+        }).then(()=>{history.push('/user-profile')})
     }
 
     return (
         <div className="card mb-3 w-100">
             <div className="row g-0">
                 <div className="col-lg-6 p-4 d-flex align-items-center">
-                    <div id="gymImages" className="carousel slide" data-mdb-ride="carousel">
-                        <div className="carousel-inner">
-                            <div className="carousel-item active">
-                                {gym.imageURL?.length === 0 ? <img src="https://mdbootstrap.com/img/new/slides/041.jpg"
-                                                                   className="d-block w-100" alt="..."/> :
-                                    (<div>
-                                        {gym.imageURL.map((url, index) =>
-                                            (<img src={url} className="d-block w-100" alt={"gymImage" + index}/>)
-                                        )}
-                                        <a className="carousel-control-prev" href="#gymImages" role="button"
-                                           data-mdb-slide="prev">
-                                            <span className="carousel-control-prev-icon" aria-hidden="true"/>
-                                            <span className="visually-hidden">Previous</span>
-                                        </a>
-                                        <a className="carousel-control-next" href="#gymImages" role="button"
-                                           data-mdb-slide="next">
-                                            <span className="carousel-control-next-icon" aria-hidden="true"/>
-                                            <span className="visually-hidden">Next</span>
-                                        </a>
-                                    </div>)
-                                }
+                    <Carousel>
+                        {gym.imageURL?.length === 0 &&
+                            <Carousel.Item>
+                                <img src="https://mdbootstrap.com/img/new/slides/041.jpg"
+                                     className="d-block w-100" alt="..."/>
+                            </Carousel.Item>
+                        }
+                        {gym.imageURL.map(url =>
+                            <Carousel.Item>
+                                <img src={url} className="d-block w-100" alt="gymImage"/>
+                            </Carousel.Item>
+                        )}
+                    </Carousel>
 
-                            </div>
-                        </div>
 
-                    </div>
                 </div>
                 <div className="col-lg-6 p-2">
                     <div className="card-body h-100 d-flex flex-column justify-content-between">
@@ -53,10 +62,12 @@ function GymCard({gym}: { gym: GymInterface }) {
                         <div>
                             <h3>₹{gym.plans[0].price}</h3>
                             <button type="button" className="btn btn-outline-dark mx-1"
-                                    data-mdb-ripple-color="dark">
+                                    data-mdb-ripple-color="dark" onClick={() => {
+                                history.push(Routes.gymInfo(gym.id))
+                            }}>
                                 View Details
                             </button>
-                            <button type="button" className="btn btn-success mx-1">Book Now</button>
+                            <button onClick={onBook} type="button" className="btn btn-success mx-1">Book Now</button>
                         </div>
                     </div>
                 </div>

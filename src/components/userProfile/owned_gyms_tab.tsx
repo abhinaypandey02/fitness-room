@@ -1,20 +1,20 @@
 import React from 'react';
 import UserInterface from "../../interfaces/user_interface";
 
-const TAB_HEADING="Enrolled Gyms"
+const TAB_HEADING="Owned Gyms"
 
-function EnrolledGymsTab({user}:{user:UserInterface}) {
+function OwnedGymsTab({user}:{user:UserInterface}) {
     console.log(user.enrolledGyms)
     return (
         <div className="flex-grow-1 bg-white normal-shadow round-corners m-2 p-2 px-4 h-100">
             <h2 className="m-2">{TAB_HEADING}</h2>
-            {user.enrolledGyms.map(gym=>{
+            {user.ownedGyms.map(gym=>{
                 return <div>
-                    {gym.gym.name}
+                    {gym.name}
                 </div>
             })}
         </div>
     );
 }
 
-export default EnrolledGymsTab;
+export default OwnedGymsTab;

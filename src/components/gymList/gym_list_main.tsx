@@ -1,18 +1,22 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import GymInterface from "../../interfaces/gym_interface";
-import {getGymList} from "../../backend/gym_provider";
-import GymCard from "./gymCard";
+import GymCard from "./gym_card";
+import {useQuery} from "@apollo/client";
+import {GYM_LIST_ALL} from "../../graphqlQueries/gymQueries";
 
-function GymList() {
-    const [gymList,setGymList]=useState<Array<GymInterface>>([]);
-    useEffect(()=>{
-        getGymList().then(gymList=>setGymList(gymList));
-    },[])
+function GymListMain() {
+    const {loading,error,data}=useQuery(GYM_LIST_ALL);
+    if(loading){
+        return <div>loading Gyms...</div>
+    }
+    if(error){
+        return <div>Error fetching gyms</div>
+    }
     return (
         <div className="container-md py-3">
-            {gymList.map(gym=>(<GymCard gym={gym}/>))}
+            {data.gyms.map((gym:GymInterface)=>(<GymCard key={gym.id} gym={gym}/>))}
         </div>
     );
 }
 
-export default GymList;
+export default GymListMain;

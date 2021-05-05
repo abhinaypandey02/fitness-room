@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
 .App {
   text-align: center;
 }
@@ -35,4 +36,18 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.round-corners {
+  border-radius: 15px;
+}
+
+.normal-shadow {
+  -webkit-box-shadow: 10px 10px 21px -11px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 10px 10px 21px -11px rgba(0, 0, 0, 0.75);
+  box-shadow: 10px 10px 21px -11px rgba(0, 0, 0, 0.75);
+}
+
+.lobster-font{
+  font-family: 'Lobster', cursive, Arial, Helvetica, sans-serif;
 }
